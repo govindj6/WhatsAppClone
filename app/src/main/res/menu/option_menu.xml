@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/viewCOntact"
+        android:title="View contact"/>
+    <item android:id="@+id/media"
+        android:title="Media"/>
+    <item android:id="@+id/Search"
+        android:title="Search"/>
+    <item android:id="@+id/mutenoty"
+        android:title="Mute notification"/>
+    <item android:id="@+id/wall"
+        android:title="Wallpaper"/>
+    <item android:id="@+id/more"
+        android:title="More"/>
+</menu>
