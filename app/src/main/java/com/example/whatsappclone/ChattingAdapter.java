@@ -25,7 +25,7 @@ public class ChattingAdapter extends RecyclerView.Adapter<ChattingAdapter.Chatti
     @Override
     public void onBindViewHolder(@NonNull ChattingViewHolder chattingViewHolder, int i) {
         Chatting position=arr.get(i);
-        chattingViewHolder.tvmsg.setText(position.msg);
+        chattingViewHolder.tvmsg.setText(position.getMsg());
     }
 
     @Override

@@ -23,11 +23,15 @@ import java.util.ArrayList;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ChattingScreenActivity extends AppCompatActivity {
-    EditText etmsg;
+    CustomEditText etmsg;
     Button btnSend;
     RecyclerView rvChatting;
     ArrayList<Chatting> arr=new ArrayList<>();
     ChattingAdapter ca;
+    CustomEditText customEditText;
+    String pic="";
+    String title="";
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -40,14 +44,14 @@ public class ChattingScreenActivity extends AppCompatActivity {
         ab.setCustomView(R.layout.custom_actionbar);
         View v = ab.getCustomView();
 
-        TextView name = v.findViewById(R.id.ab_tvname);
+        final TextView name = v.findViewById(R.id.ab_tvname);
         CircleImageView dp = v.findViewById(R.id.ab_ivdp);
         final ImageView back = v.findViewById(R.id.ab_ivback);
         final ImageView menu = v.findViewById(R.id.ab_ivmenu);
         final ImageView phone = v.findViewById(R.id.ab_ivphone);
         ImageView vedio = v.findViewById(R.id.ab_ivvideo);
         btnSend = findViewById(R.id.btnSend);
-        etmsg = findViewById(R.id.etmsg);
+        etmsg = findViewById(R.id.custom_Edittext);
         rvChatting = findViewById(R.id.rvChatting);
 
         ca = new ChattingAdapter(arr);
@@ -55,8 +59,8 @@ public class ChattingScreenActivity extends AppCompatActivity {
         rvChatting.setAdapter(ca);
 
         Intent intent = getIntent();
-        String pic = intent.getStringExtra("image");
-        String title = intent.getStringExtra("title");
+        pic = intent.getStringExtra("image");
+        title = intent.getStringExtra("title");
 
         name.setText(title);
         AQuery aQuery = new AQuery(ChattingScreenActivity.this);
@@ -65,7 +69,7 @@ public class ChattingScreenActivity extends AppCompatActivity {
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                onBackPressed();
             }
         });
         menu.setOnClickListener(new View.OnClickListener() {
@@ -99,15 +103,35 @@ public class ChattingScreenActivity extends AppCompatActivity {
             }
         });
 
+        customEditText=new CustomEditText(ChattingScreenActivity.this);
+        customEditText.cam.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(ChattingScreenActivity.this, "camera", Toast.LENGTH_SHORT).show();
+                Intent in=new Intent("android.media.action.IMAGE_CAPTURE");
+                startActivity(in);
+            }
+        });
+
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String msg = etmsg.getText().toString();
-                Chatting c = new Chatting(msg);
-                arr.add(c);
+                String msg=customEditText.msg;
+                Toast.makeText(ChattingScreenActivity.this, msg, Toast.LENGTH_SHORT).show();
+                Chatting chatting = new Chatting(msg);
+                arr.add(chatting);
                 ca.notifyDataSetChanged();
-                etmsg.getText().clear();
+                customEditText.messsge.getText().clear();
+            }
+        });
 
+        name.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i=new Intent(ChattingScreenActivity.this,UserActivity.class);
+                i.putExtra("dp",pic);
+                i.putExtra("name",title);
+                startActivity(i);
             }
         });
     }
