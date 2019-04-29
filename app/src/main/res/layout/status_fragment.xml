@@ -1,20 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/tvStatus"
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/floating_camera"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="Status"
-        android:textSize="20sp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="20dp"
+        android:clickable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:src="@drawable/cam" />
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/floating_write_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="28dp"
+        android:layout_marginRight="28dp"
+        android:layout_marginBottom="20dp"
+        android:src="@mipmap/write_status_assets"
+        app:backgroundTint="@null"
+        app:fabSize="mini"
+        app:layout_constraintBottom_toTopOf="@+id/floating_camera"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:rippleColor="@null" />
 </android.support.constraint.ConstraintLayout>

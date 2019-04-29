@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/share"
+        android:title="Share"></item>
+    <item
+        android:id="@+id/edit"
+        android:title="Edit"></item>
+    <item
+        android:id="@+id/view_in_addressbook"
+        android:title="View in address book"></item>
+    <item
+        android:id="@+id/security_code"
+        android:title="Verify security code"></item>
+</menu>

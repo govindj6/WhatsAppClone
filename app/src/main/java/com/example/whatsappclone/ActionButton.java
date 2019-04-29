@@ -28,6 +28,7 @@ public class ActionButton extends AppCompatActivity {
     ArrayList<Chat>arrayList;
     ActionButtonAdapter actionButtonAdapter;
     RequestQueue requestQueue;
+    int x;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,16 +67,17 @@ public class ActionButton extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(actionButtonAdapter);
 
+        Chat c1 = new Chat("New group", "https://ibb.co/F6mSqMm");
+        Chat c2 = new Chat("New contact", "http://169.254.6.69:8080/");
+        arrayList.add(c1);
+        arrayList.add(c2);
+
         JsonObjectRequest jsonObjectRequest=new JsonObjectRequest(url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
                     Gson gson = new Gson();
                     ChatResponse res = gson.fromJson(response.toString(), ChatResponse.class);
-                    Chat c1 = new Chat("New group", "https://ibb.co/F6mSqMm");
-                    Chat c2=new Chat("New contact","https://ibb.co/L8ZLXT4");
-                    arrayList.add(c1);
-                    arrayList.add(c2);
                     arrayList.addAll(res.Data);
                     actionButtonAdapter.notifyDataSetChanged();
                     int count=arrayList.size()-2;
