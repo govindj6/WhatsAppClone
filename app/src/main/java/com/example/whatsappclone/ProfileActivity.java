@@ -2,15 +2,12 @@ package com.example.whatsappclone;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -18,15 +15,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.androidquery.AQuery;
-import com.parse.GetCallback;
+import com.bumptech.glide.Glide;
 import com.parse.ParseException;
 import com.parse.ParseFile;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
 import com.parse.SaveCallback;
 
 import java.io.File;
+import java.io.InputStream;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -42,6 +37,7 @@ public class ProfileActivity extends AppCompatActivity {
     String name = "";
     File file = null;
     Uri imageuri = null;
+    byte[] bytes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,14 +51,12 @@ public class ProfileActivity extends AppCompatActivity {
         profileDp = findViewById(R.id.profile_dp);
         profileEditDp = findViewById(R.id.profile_dp_edit);
 
-        Intent in = getIntent();
-        name = in.getStringExtra("name");
-        final String status = in.getStringExtra("status");
-        int mobile = in.getIntExtra("mobile", 0);
-        String dp = in.getStringExtra("dp");
+        name = UserManager.getInstance().getName();
+        final String status = UserManager.getInstance().getStatus();
+        int mobile = UserManager.getInstance().getMobileNumber();
+        ParseFile dp = UserManager.getInstance().getProfilePic();
 
-        AQuery aQuery = new AQuery(ProfileActivity.this);
-        aQuery.id(profileDp).image(dp);
+        Glide.with(ProfileActivity.this).load(dp).into(profileDp);
 
         profileName.setText(name);
         profileStatus.setText(status);
@@ -131,33 +125,29 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void onUpdateName() {
-        ParseQuery<ParseObject> query = ParseQuery.getQuery("WhatsAppUser");
-        query.whereEqualTo(SettingActivity.WHATSAPPUSER_ROW_NAME, name);
-        query.getFirstInBackground(new GetCallback<ParseObject>() {
+        UserManager.getInstance().setName(etDialog.getText().toString(), new UserManager.ParseTaskCallBack() {
             @Override
-            public void done(ParseObject object, ParseException e) {
-                if (e == null) {
-                    object.put(SettingActivity.WHATSAPPUSER_ROW_NAME, etDialog.getText().toString());
-                    object.saveInBackground();
-                } else {
-                    Log.e("onUpdateName: ", e.getMessage());
-                }
+            public void onTaskDone() {
+
+            }
+
+            @Override
+            public void onTaskFailed(Exception e) {
+
             }
         });
     }
 
     private void onUpdateStatus() {
-        ParseQuery<ParseObject> query = ParseQuery.getQuery("WhatsAppUser");
-        query.whereEqualTo(SettingActivity.WHATSAPPUSER_ROW_NAME, name);
-        query.getFirstInBackground(new GetCallback<ParseObject>() {
+        UserManager.getInstance().setStatus(etDialog.getText().toString(), new UserManager.ParseTaskCallBack() {
             @Override
-            public void done(ParseObject object, ParseException e) {
-                if (e == null) {
-                    object.put(SettingActivity.WHATSAPPUSER_ROW_STATUS, etDialog.getText().toString());
-                    object.saveInBackground();
-                } else {
-                    Log.e("onUpdateName: ", e.getMessage());
-                }
+            public void onTaskDone() {
+
+            }
+
+            @Override
+            public void onTaskFailed(Exception e) {
+
             }
         });
     }
@@ -168,17 +158,9 @@ public class ProfileActivity extends AppCompatActivity {
         if (requestCode == REQUEST_PICK_IMAGE && resultCode == RESULT_OK) {
             if (data != null) {
                 try {
-                    imageuri = data.getData();
-                    if (imageuri != null) {
-                        file = new File(imageuri.getPath());
-                        Toast.makeText(this, file.toString(), Toast.LENGTH_SHORT).show();
-                        if (file.length() != 0) {
-                            Toast.makeText(this, "Has data", Toast.LENGTH_SHORT).show();
-                            onUpdateDp();
-                        } else {
-                            Toast.makeText(this, "File not found", Toast.LENGTH_SHORT).show();
-                        }
-                    }
+                    InputStream inputStream = ProfileActivity.this.getContentResolver().openInputStream(data.getData());
+                    bytes = new byte[inputStream.read()];
+                    onUpdateDp(bytes);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -186,40 +168,27 @@ public class ProfileActivity extends AppCompatActivity {
         }
     }
 
-    private void onUpdateDp() {
-        ParseQuery<ParseObject> query = ParseQuery.getQuery("WhatsAppUser");
-        query.whereEqualTo(SettingActivity.WHATSAPPUSER_ROW_NAME, name);
-        final ParseFile parseFile = new ParseFile(file);
+    private void onUpdateDp(byte[] imageData) {
+        final ParseFile parseFile = new ParseFile(imageData);
         parseFile.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
                 if (e == null) {
-                    Toast.makeText(ProfileActivity.this, "Successfully image change", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(ProfileActivity.this, "Failed to change image", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-        query.getFirstInBackground(new GetCallback<ParseObject>() {
-            @Override
-            public void done(ParseObject object, ParseException e) {
-                if (e == null) {
-                    object.put(SettingActivity.WHATSAPPUSER_ROW_PIC, parseFile);
-                    object.saveInBackground();
-                } else {
-                    Log.e("onUpdateName: ", e.getMessage());
-                }
-            }
-        });
-    }
+                    UserManager.getInstance().setProfilePicture(parseFile, new UserManager.ParseTaskCallBack() {
+                        @Override
+                        public void onTaskDone() {
+                            Toast.makeText(ProfileActivity.this, "Successfully image change", Toast.LENGTH_SHORT).show();
+                        }
 
-    private File getFileFromData(Uri selectedImage) {
-        String[] filePathColumn = {MediaStore.Images.Media.DATA};
-        Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
-        cursor.moveToFirst();
-        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-        String picturePath = cursor.getString(columnIndex);
-        cursor.close();
-        return new File(picturePath);
+                        @Override
+                        public void onTaskFailed(Exception e) {
+                            Toast.makeText(ProfileActivity.this, "Failed to change image", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                } else {
+                    Toast.makeText(ProfileActivity.this, "Failed to save image", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 }
