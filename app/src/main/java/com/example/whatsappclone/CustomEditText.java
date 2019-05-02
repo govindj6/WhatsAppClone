@@ -1,9 +1,7 @@
 package com.example.whatsappclone;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Build;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
@@ -13,14 +11,11 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 public class CustomEditText extends FrameLayout {
     View v;
-    ImageView emoji;
+    ImageView emoji, attach, cam;
     EditText messsge;
-    ImageView attach;
-    ImageView cam;
     String msg="";
     public CustomEditText(@NonNull Context context) {
         super(context);

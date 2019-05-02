@@ -10,7 +10,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
@@ -53,6 +52,7 @@ public class ChattingScreenActivity extends AppCompatActivity {
         btnSend = findViewById(R.id.btnSend);
         etmsg = findViewById(R.id.custom_Edittext);
         rvChatting = findViewById(R.id.rvChatting);
+        customEditText = findViewById(R.id.custom_Edittext);
 
         ca = new ChattingAdapter(arr);
         rvChatting.setLayoutManager(new LinearLayoutManager(ChattingScreenActivity.this));
@@ -103,8 +103,8 @@ public class ChattingScreenActivity extends AppCompatActivity {
             }
         });
 
-        customEditText=new CustomEditText(ChattingScreenActivity.this);
-        customEditText.cam.setOnClickListener(new View.OnClickListener() {
+        CustomEditText CET = new CustomEditText(ChattingScreenActivity.this);
+        CET.cam.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Toast.makeText(ChattingScreenActivity.this, "camera", Toast.LENGTH_SHORT).show();

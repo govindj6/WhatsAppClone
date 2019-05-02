@@ -1,5 +1,6 @@
 package com.example.whatsappclone;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentManager;
@@ -39,7 +40,13 @@ public class MainActivity extends AppCompatActivity {
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
+        String Title = item.getTitle().toString();
+        switch (Title) {
+            case "Settings":
+                Intent i = new Intent(MainActivity.this, SettingActivity.class);
+                startActivity(i);
+                break;
+        }
         return super.onOptionsItemSelected(item);
     }
 }

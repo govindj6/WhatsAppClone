@@ -10,6 +10,10 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.vanniktech.emoji.EmojiManager;
+import com.vanniktech.emoji.EmojiPopup;
+import com.vanniktech.emoji.google.GoogleEmojiProvider;
+
 public class WriteStatus extends AppCompatActivity {
     FloatingActionButton floatingWriteSend;
     ImageView writeEmoji, writeText, writeColour;
@@ -24,6 +28,8 @@ public class WriteStatus extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_write_status);
         getSupportActionBar().hide();
+
+        EmojiManager.install(new GoogleEmojiProvider());
 
         floatingWriteSend = findViewById(R.id.floating_write_status);
         writeEmoji = findViewById(R.id.write_emoji);
@@ -48,7 +54,10 @@ public class WriteStatus extends AppCompatActivity {
         writeEmoji.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                final EmojiPopup emojiPopup = EmojiPopup.Builder.fromRootView(v).build(etWriteStatus);
+                emojiPopup.toggle(); // Toggles visibility of the Popup.
+                emojiPopup.dismiss(); // Dismisses the Popup.
+                emojiPopup.isShowing();
             }
         });
     }
